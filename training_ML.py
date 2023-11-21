@@ -57,26 +57,26 @@ def plot(df, option):
         df = df.groupby(df['Date'].dt.date).sum()
 
     models = ['Random Forest', 'Gradient Boosting', 'AdaBoost', 'Extra Trees', 'CatBoost', 'XGBoost', 'NGBoost']
-    
-    for model in models:
-        plt.figure(figsize=(12,6))
+    fig, axs = plt.subplots(4,2,figsize=(15,20))
+    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+
+    for i, model in enumerate(models):
+        ax1 = axs[i//2, i%2]
+        ax2 = axs[i//2, i%2]
 
         #actual vs. predict
-        plt.subplot(1,2,1)
-        plt.plot(df['Actual'], label='Actual', color='blue')
-        plt.plot(df[model], label='Prediction', color='red')
-        plt.title(f'{model} - Actual vs. Prediction')
-        plt.legend()
+        ax1.plot(df['Actual'], label='Actual', color='blue')
+        ax1.plot(df[model], label='Prediction', color='red')
+        ax1.set_title(f'{model} - Actual vs. Prediction')
+        ax1.legend()
 
         #predict - actual
-        plt.subplot(1, 2, 2)
         error = df[model] - df['Actual']
-        plt.plot(error, color='purple')
-        plt.title(f'{model} - Prediction Error (Prediction - Actual)')
-        plt.axhline(y=0, color='gray', linestyle='--')
-
-        plt.tight_layout()
-        plt.show()
+        ax2.plot(error, color='purple')
+        ax2.set_title(f'{model} - Prediction Error (Prediction - Actual)')
+        ax2.axhline(y=0, color='gray', linestyle='--')
+    
+    plt.show()
 
 def calculate_mae(df):
     mae_values = {}
@@ -92,5 +92,5 @@ print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)
 models = initialize_models()
 predictions = predict(models, X_train, y_train, X_test ,y_test, test)
 calculate_mae(predictions)
-#plot(predictions, 2)
+plot(predictions, 2)
 
